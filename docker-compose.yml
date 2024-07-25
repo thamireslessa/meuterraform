@@ -1,0 +1,31 @@
+version: '3.7'  # Versão do Docker Compose
+
+services:
+  db:
+    image: mysql:5.7  # Imagem do Docker para o MySQL versão 5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: example  # Senha do usuário root do MySQL
+      MYSQL_DATABASE: wordpress  # Nome do banco de dados
+      MYSQL_USER: user  # Nome do usuário do banco de dados
+      MYSQL_PASSWORD: password  # Senha do usuário do banco de dados
+    volumes:
+      - db_data:/var/lib/mysql  # Volume para persistir dados do MySQL
+
+  wordpress:
+    image: wordpress:latest  # Imagem do Docker para o WordPress
+    depends_on:
+      - db  # Define a dependência para garantir que o banco de dados seja iniciado antes do WordPress
+    ports:
+      - "80:80"  # Mapeia a porta 80 do host para a porta 80 do contêiner
+    environment:
+      WORDPRESS_DB_HOST: db:3306  # Host e porta do banco de dados MySQL
+      WORDPRESS_DB_NAME: wordpress  # Nome do banco de dados que o WordPress usará
+      WORDPRESS_DB_USER: user  # Nome do usuário do banco de dados
+      WORDPRESS_DB_PASSWORD: password  # Senha do usuário do banco de dados
+    volumes:
+      - wordpress_data:/var/www/html  # Volume para persistir dados do WordPress
+
+volumes:
+  db_data:  # Volume nomeado para armazenar os dados do MySQL
+  wordpress_data:  # Volume nomeado para armazenar os dados do WordPress
+
